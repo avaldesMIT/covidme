@@ -10,7 +10,7 @@
     <string name="menu_camera">Track</string>
     <string name="menu_checkup">Check-up</string>
 
-    <string name="button_calculate">Calculate</string>
+    <string name="button_calculate">Check</string>
 
     <string name="symptoms">Do you have any of these symptoms?</string>
     <string name="fever">Fever</string>
