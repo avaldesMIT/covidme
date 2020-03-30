@@ -3,9 +3,21 @@ package me.covid.cov_idme;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+
+import me.covid.cov_idme.ui.camera.CameraFragment;
 
 /**
  * Provides static information about the COV-ID.me application
@@ -16,9 +28,13 @@ public class CovidMeApplication extends Application {
 
     private static Integer riskScore = null;
 
+    private static Set<String> trackers = new HashSet<>();
+
     private static final String UNIQUE_ID_PREFERENCE_NAME = "UUID";
 
     private static final String RISK_SCORE_PREFERENCE_NAME = "SCORE";
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
     /**
      * Gets the pseudo-randomly generated universal unique identifier for this application. The identifier will
@@ -55,6 +71,33 @@ public class CovidMeApplication extends Application {
         editor.commit();
     }
 
+    /**
+     * Adds the contact to the set of contacts for the current day
+     *
+     * @param tracker - the contact to add
+     * @return true if and only if the tracker was successfully added
+     */
+    public synchronized boolean addTracker(String tracker) {
+        if (!trackers.contains(tracker)) {
+            trackers.add(tracker);
+
+            String dateString = DATE_FORMAT.format(new Date());
+            try (FileOutputStream outputStream = openFileOutput(dateString, Context.MODE_APPEND & Context.MODE_PRIVATE);
+                 OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
+
+                writer.write(tracker);
+                writer.flush();
+
+                Log.d("tracking", "Persisted to file");
+            } catch (Exception e) {
+                Log.e("tracking", "could not save tracker", e);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,6 +105,7 @@ public class CovidMeApplication extends Application {
         Context applicationContext = getApplicationContext();
         setUniqueId(applicationContext);
         setRiskScore(applicationContext);
+        loadTrackers();
     }
 
     /**
@@ -71,7 +115,7 @@ public class CovidMeApplication extends Application {
      *
      * @param context - The context to use in reading the application's shared preferences
      */
-    private synchronized static void setUniqueId(Context context) {
+    private synchronized void setUniqueId(Context context) {
         if (uniqueID == null) {
             SharedPreferences sharedPrefs = context.getSharedPreferences(UNIQUE_ID_PREFERENCE_NAME, Context.MODE_PRIVATE);
             uniqueID = sharedPrefs.getString(UNIQUE_ID_PREFERENCE_NAME, null);
@@ -89,13 +133,31 @@ public class CovidMeApplication extends Application {
      *
      * @param context - the context to use in reading the application's shared preferences
      */
-    private synchronized static void setRiskScore(Context context) {
+    private synchronized void setRiskScore(Context context) {
         if (riskScore == null) {
             SharedPreferences sharedPrefs = context.getSharedPreferences(RISK_SCORE_PREFERENCE_NAME, Context.MODE_PRIVATE);
             String score = sharedPrefs.getString(RISK_SCORE_PREFERENCE_NAME, null);
             if (score != null) {
                 riskScore = Integer.valueOf(score);
             }
+        }
+    }
+
+    /**
+     * Loads the list of trackers we've seen for today
+     */
+    private synchronized void loadTrackers() {
+        String dateString = DATE_FORMAT.format(new Date());
+        try (InputStream inputStream = openFileInput(dateString);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                trackers.add(line);
+                Log.d("loaded", line);
+            }
+        } catch(Exception e) {
+            Log.e("setup", "loading trackers", e);
         }
     }
 }

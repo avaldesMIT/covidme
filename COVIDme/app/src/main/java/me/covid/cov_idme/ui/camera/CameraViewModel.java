@@ -4,16 +4,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import me.covid.cov_idme.CovidMeApplication;
+
 public class CameraViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
-
     public CameraViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
-    }
-
-    public LiveData<String> getText() {
-        return mText;
+        // Default constructor
     }
 }

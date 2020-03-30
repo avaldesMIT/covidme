@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -68,24 +67,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-//        setTheme(R.style.AppTheme);
-
-        LayerDrawable splashLayer = (LayerDrawable) getResources().getDrawable(R.drawable.splash_screen);
-        Drawable bitmapDrawable = (Drawable) splashLayer.findDrawableByLayerId(R.id.splash_screen_image);
-        bitmapDrawable.mutate().setAlpha(0);
-//        splashLayer.setDrawableByLayerId(R.id.splash_screen_image, new ColorDrawable(Color.BLACK));
-
-//        BitmapDrawable bitmapDrawable = (BitmapDrawable) splashLayer.findDrawableByLayerId(R.id.splash_screen_image);
-//        Bitmap bitmap = bitmapDrawable.getBitmap();
-//        int[] pixels = new int[bitmap.getHeight() * bitmap.getWidth()];
-//        for (int x = 0; x < bitmap.getWidth(); x++) {
-//            int offset = x * bitmap.getHeight();
-//            for (int y = 0; y < bitmap.getHeight(); y++) {
-//                pixels[offset + y] = Color.BLACK;
-//            }
-//        }
-//        bitmap.setPixels(pixels, 0, 0, 0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
 
     @Override
