@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -13,7 +14,11 @@ public class CovidMeApplication extends Application {
 
     private static String uniqueID = null;
 
+    private static Integer riskScore = null;
+
     private static final String UNIQUE_ID_PREFERENCE_NAME = "UUID";
+
+    private static final String RISK_SCORE_PREFERENCE_NAME = "SCORE";
 
     /**
      * Gets the pseudo-randomly generated universal unique identifier for this application. The identifier will
@@ -26,10 +31,37 @@ public class CovidMeApplication extends Application {
         return uniqueID;
     }
 
+    /**
+     * Gets a value representing the user's infection risk score
+     *
+     * @return a value between 0 and 100 inclusive where 0 is no risk of being infected and 100 is certainty of
+     * infection
+     */
+    public static Integer getRiskScore() {
+        return riskScore;
+    }
+
+    /**
+     * Updates the risk score in the shared preferences so that it is available the next time the application
+     * is loaded
+     *
+     * @param score - the updated score
+     */
+    public synchronized void updateRiskScore(Integer score) {
+        CovidMeApplication.riskScore = score;
+        SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences(RISK_SCORE_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(RISK_SCORE_PREFERENCE_NAME, String.valueOf(CovidMeApplication.riskScore));
+        editor.commit();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        setUniqueId(getApplicationContext());
+
+        Context applicationContext = getApplicationContext();
+        setUniqueId(applicationContext);
+        setRiskScore(applicationContext);
     }
 
     /**
@@ -48,6 +80,21 @@ public class CovidMeApplication extends Application {
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putString(UNIQUE_ID_PREFERENCE_NAME, uniqueID);
                 editor.commit();
+            }
+        }
+    }
+
+    /**
+     * Retrieves the user's risk score from shared preference.
+     *
+     * @param context - the context to use in reading the application's shared preferences
+     */
+    private synchronized static void setRiskScore(Context context) {
+        if (riskScore == null) {
+            SharedPreferences sharedPrefs = context.getSharedPreferences(RISK_SCORE_PREFERENCE_NAME, Context.MODE_PRIVATE);
+            String score = sharedPrefs.getString(RISK_SCORE_PREFERENCE_NAME, null);
+            if (score != null) {
+                riskScore = Integer.valueOf(score);
             }
         }
     }

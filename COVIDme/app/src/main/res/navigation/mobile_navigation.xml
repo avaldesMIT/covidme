@@ -19,8 +19,8 @@
 
     <fragment
         android:id="@+id/nav_checkup"
-        android:name="me.covid.cov_idme.ui.gallery.GalleryFragment"
+        android:name="me.covid.cov_idme.ui.checkup.CheckupFragment"
         android:label="@string/menu_checkup"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_checkup" />
 
 </navigation>

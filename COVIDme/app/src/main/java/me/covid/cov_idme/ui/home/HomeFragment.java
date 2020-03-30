@@ -20,9 +20,20 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import me.covid.cov_idme.CovidMeApplication;
 import me.covid.cov_idme.R;
 
 public class HomeFragment extends Fragment {
+
+    private static final int GREEN = Color.rgb(0, 128, 0);
+
+    private static final int YELLOW = Color.YELLOW;
+
+    private static final int RED = Color.RED;
+
+    private static final int YELLOW_THRESHOLD = 25;
+
+    private static final int RED_THRESHOLD = 90;
 
     private HomeViewModel homeViewModel;
 
@@ -38,6 +49,15 @@ public class HomeFragment extends Fragment {
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String text) {
+                Integer score = CovidMeApplication.getRiskScore();
+
+                int color = GREEN;
+                if (score != null && score >= RED_THRESHOLD) {
+                    color = RED;
+                } else if (score != null && score >= YELLOW_THRESHOLD) {
+                    color = YELLOW;
+                }
+
                 textView.setText(text);
 
                 try {
@@ -47,7 +67,7 @@ public class HomeFragment extends Fragment {
                     for (int x = 0; x < bitmap.getWidth(); x++) {
                         for (int y = 0; y < bitmap.getHeight(); y++) {
                             if (Color.valueOf(Color.WHITE).equals(bitmap.getColor(x, y))) {
-                                bitmap.setPixel(x, y, Color.rgb(0, 128, 0));
+                                bitmap.setPixel(x, y, color);
                             }
                         }
                     }

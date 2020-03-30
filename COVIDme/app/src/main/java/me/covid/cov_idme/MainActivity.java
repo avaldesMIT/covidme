@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("test", "on click");
+                Log.i("click", "camera button");
                 NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment);
                 navController.navigate(R.id.nav_camera);
             }

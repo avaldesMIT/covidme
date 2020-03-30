@@ -9,4 +9,18 @@
     <string name="menu_home">My QR</string>
     <string name="menu_camera">Track</string>
     <string name="menu_checkup">Check-up</string>
+
+    <string name="button_calculate">Calculate</string>
+
+    <string name="symptoms">Do you have any of these symptoms?</string>
+    <string name="fever">Fever</string>
+    <string name="cough">Dry cough</string>
+    <string name="breath">Shortness of breath</string>
+    <string name="fatigue">Fatigue</string>
+    <string name="body_ache">Body aches</string>
+    <string name="headache">Headache</string>
+    <string name="runny_nose">Runny nose</string>
+    <string name="sore_throat">Sore throat</string>
+    <string name="diarrhea">Diarrhea</string>
+    <string name="loss_of_smell">Loss of smell</string>
 </resources>
