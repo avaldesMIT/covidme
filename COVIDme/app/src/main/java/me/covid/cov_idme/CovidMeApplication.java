@@ -3,6 +3,7 @@ package me.covid.cov_idme;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -88,23 +89,16 @@ public class CovidMeApplication extends Application {
      * @param tracker - the contact to add
      * @return true if and only if the tracker was successfully added
      */
-    public synchronized boolean addTracker(String tracker) {
-        if (!trackers.contains(tracker)) {
-            trackers.add(tracker);
+    public boolean addTracker(String tracker) {
+        synchronized (trackers) {
+            if (!trackers.contains(tracker)) {
+                trackers.add(tracker);
 
-            String dateString = DATE_FORMAT.format(new Date());
-            try (FileOutputStream outputStream = openFileOutput(dateString, Context.MODE_APPEND & Context.MODE_PRIVATE);
-                 OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
+                String dateString = DATE_FORMAT.format(new Date());
+                new UpdateTrackerFile(dateString, tracker).execute();
 
-                writer.write(tracker);
-                writer.flush();
-
-                Log.d("tracking", "Persisted to file");
-            } catch (Exception e) {
-                Log.e("tracking", "could not save tracker", e);
+                return true;
             }
-
-            return true;
         }
         return false;
     }
@@ -159,16 +153,78 @@ public class CovidMeApplication extends Application {
      */
     private synchronized void loadTrackers() {
         String dateString = DATE_FORMAT.format(new Date());
-        try (InputStream inputStream = openFileInput(dateString);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+        new LoadTrackers(dateString).execute();
+    }
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                trackers.add(line);
-                Log.d("loaded", line);
+    /**
+     * Adds the trackers provided to the set of existing trackers
+     *
+     * @param trackers - the trackers to add
+     */
+    private void addTrackers(Set<String> trackers) {
+        if (trackers != null && !trackers.isEmpty()) {
+            synchronized (CovidMeApplication.trackers) {
+                CovidMeApplication.trackers.addAll(trackers);
             }
-        } catch(Exception e) {
-            Log.e("setup", "loading trackers", e);
+        }
+    }
+
+    private class LoadTrackers extends AsyncTask<Void, Void, Set<String>> {
+
+        private String dateString;
+
+        LoadTrackers(String dateString) {
+            this.dateString = dateString;
+        }
+
+        @Override
+        protected Set<String> doInBackground(Void... voids) {
+            Set<String> lines = new HashSet<>();
+            try (InputStream inputStream = openFileInput(dateString);
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lines.add(line);
+                    Log.d("loaded", line);
+                }
+            } catch(Exception e) {
+                Log.e("setup", "loading trackers", e);
+            }
+
+            return lines;
+        }
+
+        @Override
+        protected void onPostExecute(Set<String> result) {
+            addTrackers(result);
+        }
+    }
+
+    private class UpdateTrackerFile extends AsyncTask<Void, Void, Void> {
+
+        private String dateString;
+
+        private String tracker;
+
+        UpdateTrackerFile(String dateString, String tracker) {
+            this.dateString = dateString;
+            this.tracker = tracker;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try (FileOutputStream outputStream = openFileOutput(dateString, Context.MODE_APPEND & Context.MODE_PRIVATE);
+                 OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
+
+                writer.write(tracker);
+                writer.flush();
+
+                Log.d("tracking", "Persisted to file");
+            } catch (Exception e) {
+                Log.e("tracking", "could not save tracker", e);
+            }
+            return null;
         }
     }
 }
