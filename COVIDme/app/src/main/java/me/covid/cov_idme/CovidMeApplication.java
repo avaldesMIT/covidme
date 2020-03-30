@@ -80,7 +80,7 @@ public class CovidMeApplication extends Application {
      * @return true if and only if the user is infected
      */
     private static boolean isInfected() {
-        return riskScore.compareTo(100) >= 0;
+        return riskScore != null && riskScore.compareTo(100) >= 0;
     }
 
     /**
