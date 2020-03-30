@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_share"
+            android:icon="?android:attr/fingerprintAuthDrawable"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_camera"
@@ -16,5 +16,9 @@
             android:id="@+id/nav_checkup"
             android:icon="@android:drawable/ic_menu_search"
             android:title="@string/menu_checkup" />
+        <item
+            android:id="@+id/nav_result"
+            android:icon="?android:attr/alertDialogIcon"
+            android:title="@string/menu_result" />
     </group>
 </menu>

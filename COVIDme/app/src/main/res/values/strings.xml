@@ -9,8 +9,17 @@
     <string name="menu_home">My QR</string>
     <string name="menu_camera">Track</string>
     <string name="menu_checkup">Check-up</string>
+    <string name="menu_result">Test results</string>
 
     <string name="button_calculate">Check</string>
+    <string name="button_submit">Submit</string>
+
+    <string name="results">Were you diagnosed with COVID-19?</string>
+    <string name="doctor">By my doctor</string>
+    <string name="test_result">Through a positive test result</string>
+
+    <string name="results_advice">Note: Submitting your results will notify all the people
+        you\'ve been in contact with and turn your status RED.</string>
 
     <string name="symptoms">Do you have any of these symptoms?</string>
     <string name="fever">Fever</string>

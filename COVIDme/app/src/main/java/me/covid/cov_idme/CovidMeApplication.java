@@ -64,11 +64,22 @@ public class CovidMeApplication extends Application {
      * @param score - the updated score
      */
     public synchronized void updateRiskScore(Integer score) {
-        CovidMeApplication.riskScore = score;
-        SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences(RISK_SCORE_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString(RISK_SCORE_PREFERENCE_NAME, String.valueOf(CovidMeApplication.riskScore));
-        editor.commit();
+        if (!isInfected()) {
+            CovidMeApplication.riskScore = score;
+            SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences(RISK_SCORE_PREFERENCE_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putString(RISK_SCORE_PREFERENCE_NAME, String.valueOf(CovidMeApplication.riskScore));
+            editor.commit();
+        }
+    }
+
+    /**
+     * Determines whether or not the user is infected, based on his or her score
+     *
+     * @return true if and only if the user is infected
+     */
+    private static boolean isInfected() {
+        return riskScore.compareTo(100) >= 0;
     }
 
     /**
