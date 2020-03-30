@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_home"/>
 
     <fragment
+        android:id="@+id/nav_camera"
+        android:name="me.covid.cov_idme.ui.camera.CameraFragment"
+        android:label="@string/menu_camera"
+        tools:layout="@layout/fragment_camera"/>
+
+    <fragment
         android:id="@+id/nav_checkup"
         android:name="me.covid.cov_idme.ui.gallery.GalleryFragment"
         android:label="@string/menu_checkup"
