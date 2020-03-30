@@ -18,8 +18,11 @@
         android:layout_height="wrap_content"
         android:background="@color/background"
         android:contentDescription="@string/nav_header_desc"
+        android:foregroundTint="@color/colorAccent"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/ic_menu_search" />
+        android:minWidth="100px"
+        android:minHeight="98px"
+        app:srcCompat="@drawable/covidme_icon" />
 
     <TextView
         android:layout_width="match_parent"
