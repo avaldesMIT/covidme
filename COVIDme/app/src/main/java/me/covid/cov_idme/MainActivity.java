@@ -2,7 +2,15 @@ package me.covid.cov_idme;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -59,6 +68,24 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+//        setTheme(R.style.AppTheme);
+
+        LayerDrawable splashLayer = (LayerDrawable) getResources().getDrawable(R.drawable.splash_screen);
+        Drawable bitmapDrawable = (Drawable) splashLayer.findDrawableByLayerId(R.id.splash_screen_image);
+        bitmapDrawable.mutate().setAlpha(0);
+//        splashLayer.setDrawableByLayerId(R.id.splash_screen_image, new ColorDrawable(Color.BLACK));
+
+//        BitmapDrawable bitmapDrawable = (BitmapDrawable) splashLayer.findDrawableByLayerId(R.id.splash_screen_image);
+//        Bitmap bitmap = bitmapDrawable.getBitmap();
+//        int[] pixels = new int[bitmap.getHeight() * bitmap.getWidth()];
+//        for (int x = 0; x < bitmap.getWidth(); x++) {
+//            int offset = x * bitmap.getHeight();
+//            for (int y = 0; y < bitmap.getHeight(); y++) {
+//                pixels[offset + y] = Color.BLACK;
+//            }
+//        }
+//        bitmap.setPixels(pixels, 0, 0, 0, 0, bitmap.getWidth(), bitmap.getHeight());
     }
 
     @Override
